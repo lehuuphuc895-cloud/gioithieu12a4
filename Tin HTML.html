@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12A4 - The Legend</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+	a {
+  text-decoration: none;   /* bỏ gạch chân */
+  font-weight: normal;     /* bỏ in đậm */
+  color: inherit;          /* lấy màu chữ xung quanh */
+}
+        /* GIỮ NGUYÊN CSS GỐC VÀ THÊM HIỆU ỨNG */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { overflow-x: hidden; background: #0f2027; background: linear-gradient(to right, #2c5364, #203a43, #0f2027); color: white; transition: filter 0.5s; }
+
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 40px; background: rgba(30, 60, 114, 0.8); 
+            backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000;
+        }
+        
+        .rainbow-text {
+            background: linear-gradient(to right, #ff2400, #e8b71d, #1de840, #1ddde8, #2b1de8, #dd00ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 400% 100%; animation: rainbow-move 5s linear infinite;
+        }
+        @keyframes rainbow-move { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
+
+        /* HIỆU ỨNG CHO TRANG CHỦ KHI CHUYỂN */
+        main { transition: transform 0.8s, opacity 0.8s, filter 0.8s; }
+        .main-out { transform: scale(0.9); opacity: 0; filter: blur(10px); }
+
+        #homePage {
+            height: 90vh; display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; text-align: center; position: relative; z-index: 2;
+        }
+        
+        /* PHÓNG TO KHI NHẤP */
+        .btn-main, .leader-card, .gallery-item, .team-box, .nav a {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .btn-main:active, .leader-card:active { transform: scale(0.9); }
+
+        /* HIỆU ỨNG CHUYỂN TRANG MƯỢT (OVERLAY) */
+        .profile-page {
+            position: fixed; inset: 0; background: rgba(15, 32, 39, 0.98); 
+            backdrop-filter: blur(20px); transform: scale(1.1) translateY(100%);
+            opacity: 0; transition: all 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+            padding: 80px 5%; overflow-y: auto; z-index: 2000; visibility: hidden;
+        }
+        .profile-page.active { transform: scale(1) translateY(0); opacity: 1; visibility: visible; }
+
+        /* ALBUM ẢNH */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .gallery-item { border-radius: 15px; overflow: hidden; border: 2px solid rgba(255,255,255,0.1); }
+        .gallery-item img { width: 100%; height: 250px; object-fit: cover; transition: 0.5s; }
+        .gallery-item:hover { transform: scale(1.05) rotate(2deg); border-color: #ffd700; z-index: 5; }
+
+        /* TABS (THANH CHỌN) */
+        .tab-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+        .tab-btn {
+            padding: 12px 30px; border: 2px solid #ffd700; border-radius: 25px;
+            background: transparent; color: white; cursor: pointer; transition: 0.4s;
+            font-weight: 600; text-transform: uppercase;
+        }
+        .tab-btn.active { background: #ffd700; color: #000; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
+
+        .leader-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .leader-card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .leader-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.1); }
+        .leader-card img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #ffd700; margin-bottom: 15px; object-fit: cover; }
+
+        .team-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #ffd700; transition: 0.3s; }
+        .team-box:hover { padding-left: 30px; background: rgba(255,215,0,0.1); }
+
+        .nav { display: flex; gap: 20px; }
+        .nav a { color: white; text-decoration: none; font-weight: 600; }
+        .nav a:hover { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
+        
+        .music-player {
+            position: fixed; bottom: 20px; left: 20px; z-index: 3000;
+            background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 30px;
+            display: flex; align-items: center; gap: 10px; border: 1px solid #ffd700;
+        }
+
+        footer { padding: 30px; text-align: center; background: rgba(0,0,0,0.3); }
+
+        /* Animation cho Tab nội dung */
+        .tab-pane { animation: slideIn 0.5s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="music-player">
+        <span id="music-status">🎵 Đang tắt nhạc</span>
+        <button onclick="toggleMusic()" id="musicBtn" style="background: #ffd700; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-size: 18px;">▶</button>
+        <audio id="bgMusic" loop>
+            <source src="https://www.bensound.com/bensound-music/bensound-memories.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <header class="header">
+        <div class="logo rainbow-text" style="font-size: 1.5rem;" onclick="showHome()">12A4 LEGEND</div>
+        <nav class="nav">
+            <a onclick="showHome()">TRANG CHỦ</a>
+            <a onclick="openSection('aboutPage')">GIỚI THIỆU</a>
+            <a onclick="openSection('galleryPage')">ALBUM</a>
+            <a onclick="openSection('bcsPage')">LỚP MÌNH</a>
+            <a onclick="openSection('teacherPage')">THẦY CÔ</a>
+        </nav>
+    </header>
+
+    <main id="homePage">
+        <div class="hero-text">
+            <h1 class="rainbow-text">TẬP THỂ 12A4</h1>
+            <p style="font-size: 1.4rem; letter-spacing: 3px; font-weight: 300; margin: 10px 0;">40 CON NGƯỜI - 1 GIA ĐÌNH</p>
+            <button class="btn-main" onclick="openSection('aboutPage')">KHÁM PHÁ NGAY</button>
+        </div>
+    </main>
+
+    <div id="aboutPage" class="profile-page">
+        <h2 class="rainbow-text" style="text-align:center; font-size: 3rem; margin-bottom: 30px;">HÀNH TRÌNH 12A4</h2>
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div class="team-box"><h3>Tập thể đoàn kết</h3><p>Luôn đi đầu trong các phong trào thi đua và học tập của trường.</p></div>
+            <div class="team-box"><h3>Thành tích</h3><p>🏆 Lớp tiên tiến xuất sắc | 🎖️ Giải nhất văn nghệ khối</p></div>
+        </div>
+        <center><button class="btn-main" onclick="closeAll()">QUAY LẠI</button></center>
+    </div>
+
+    <div id="galleryPage" class="profile-page">
+        <h2 class="rainbow-text" style="text-align:center; font-size: 3rem; margin-bottom: 30px;">KHOẢNH KHẮC</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="1.jpg"></div>
+            <div class="gallery-item"><img src="2.jpg"></div>
+            <div class="gallery-item"><img src="3.jpg"></div>
+            <div class="gallery-item"><img src="4.jpg"></div>
+            <div class="gallery-item"><img src="5.jpg"></div>
+            <div class="gallery-item"><img src="6.jpg"></div>
+        </div>
+        <center><button class="btn-main" style="margin-top:40px" onclick="closeAll()">QUAY LẠI</button></center>
+    </div>
+
+    <div id="bcsPage" class="profile-page">
+        <h2 class="rainbow-text" style="text-align:center; font-size: 3rem; margin-bottom: 20px;">THÀNH VIÊN</h2>
+        
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('bcs-content', this)">Cán Sự</button>
+            <button class="tab-btn" onclick="switchTab('to-content', this)">Các Tổ</button>
+            <button class="tab-btn" onclick="switchTab('tin-content', this)">Nhóm Tin</button>
+        </div>
+
+        <div id="bcs-content" class="tab-pane">
+            <div class="leader-grid">
+                <a href = "file:///C:/Tin%20html/lop%20truong.html"><div class="leader-card"><img src="hoanganh.jpg"><h3>Phan Hoàng Anh</h3><p style="color:#ffd700">Lớp Trưởng</p></div></a>
+                <a href = "file:///C:/Tin%20html/lop%20pho.html"><div class="leader-card"><img src="vannghi.jpg"><h3>Nguyễn Ngọc Vân Nghi</h3><p style="color:#ffd700">Lớp Phó Học Tập</p></div></a>
+            </div>
+        </div>
+
+        <div id="to-content" class="tab-pane" style="display:none; max-width:800px; margin:0 auto;">
+            <div class="team-box"><h3>Tổ 1</h3><p>Phúc ,Thu ,Lan Anh ,Duy ,Tuấn ,Nghi ,Đức ,Sáng ,Bảo ,Quang</p></div>
+            <div class="team-box"><h3>Tổ 2</h3><p>Khuyên ,Giang ,Thư ,My thảo ,Khánh ,Thành ,Thu Ngân ,Linh ,Trâm ,Kiên</p></div>
+            <div class="team-box"><h3>Tổ 3</h3><p>Hoàng Anh ,Quỳnh Ngân ,Quỳnh ,Đạt ,Thúy ,Khuê ,Yến Nhi ,Vân ,Diệp ,Tuyết Nhi</p></div>
+            <div class="team-box"><h3>Tổ 4</h3><p>Minh Hà ,Văn Hà ,Trưởng ,Thảo Trang ,Châu ,Đoan Trang ,Ly ,Trân ,Huy ,Vinh</p></div>
+        </div>
+
+        <div id="tin-content" class="tab-pane" style="display:none; max-width:800px; margin:0 auto;">
+            <div class="team-box" style="border-left-color: #ff00c8;">
+                <h3>Nhóm Truyền Thông</h3>
+                <p>📰 Phụ trách: Phúc – Thu – Nghi – Lan Anh – Duy</p>
+                <p>✨ Cập nhật mọi tin tức nóng hổi của 12A4.</p>
+            </div>
+        </div>
+
+        <center><button class="btn-main" onclick="closeAll()">QUAY LẠI</button></center>
+    </div>
+
+    <div id="teacherPage" class="profile-page">
+        <h2 class="rainbow-text" style="text-align:center; font-size: 3rem; margin-bottom: 30px;">NGƯỜI LÁI ĐÒ</h2>
+        <div class="leader-grid" id="teacherGrid"></div>
+        <center><button class="btn-main" style="margin-top:40px" onclick="closeAll()">QUAY LẠI</button></center>
+    </div>
+
+    <footer>© 2026 - Tập thể Lớp 12A4 Legend - Trái tim luôn hướng về A4</footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+    
+        // Khởi tạo hiệu ứng tuyết
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80 },
+                "color": { "value": "#ffffff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5 },
+                "size": { "value": 3 },
+                "move": { "enable": true, "speed": 2, "direction": "bottom" }
+            }
+        });
+
+        // Nhạc nền
+        let isPlaying = false;
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            const btn = document.getElementById('musicBtn');
+            if (isPlaying) { 
+                music.pause(); 
+                btn.innerText = "▶";
+                document.getElementById('music-status').innerText = "🎵 Đang tắt nhạc";
+            } else { 
+                music.play(); 
+                btn.innerText = "⏸";
+                document.getElementById('music-status').innerText = "🎶 Đang phát nhạc";
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // CHUYỂN TRANG MƯỢT MÀ
+        function openSection(id) {
+            // Hiệu ứng trang chủ thu nhỏ và mờ đi
+            document.getElementById('homePage').classList.add('main-out');
+            
+            // Hiện trang nội dung sau một chút delay để tạo cảm giác mượt
+            setTimeout(() => {
+                document.getElementById(id).classList.add('active');
+            }, 100);
+        }
+
+        function closeAll() {
+            document.querySelectorAll('.profile-page').forEach(p => p.classList.remove('active'));
+            document.getElementById('homePage').classList.remove('main-out');
+        }
+
+        function showHome() { closeAll(); }
+
+        // CHUYỂN TABS TRONG TRANG THÀNH VIÊN
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-pane').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).style.display = 'block';
+            btn.classList.add('active');
+        }
+
+        // Tự động tạo danh sách giáo viên
+        const teacherGrid = document.getElementById('teacherGrid');
+        const teachers = [
+  { name: "Vũ Thị Vân", subject: "Anh (GVCN)", link: "file:///C:/Tin%20html/co%20van.html", img: "covan.jpg" },
+  { name: "K Loan", subject: "Ngữ Văn", link: "file:///C:/Tin%20html/co%20loan.html", img: "coloan.jpg" },
+  { name: "Vũ Thị Thanh Thảo", subject: "Toán", link: "file:///C:/Tin%20html/co%20th%E1%BA%A3o.html", img: "cothao.jpg" },
+  { name: "Nguyễn Thị Thuật", subject: "Sinh", link: "file:///C:/Tin%20html/co%20thuat.html", img: "cothuat.jpg" },
+  { name: "Đỗ Thị Ngọc Trang", subject: "Hóa Học", link: "file:///C:/Tin%20html/co%20trang.html", img: "cotrang.jpg" },
+  { name: "Bùi Thị Thanh Nhung", subject: "Tin", link: "file:///C:/Tin%20html/co%20nhung.html", img: "conhung.jpg" }
+];
+teachers.forEach((gv, i) => {
+            teacherGrid.innerHTML += `
+			<a href = "${gv.link}" class="leader-link">
+                <div class="leader-card">
+                    <img src="${gv.img}" alt="GV">
+                    <h3>${gv.name}</h3>
+                    <p style="color:#ffd700; font-weight: 600;">${gv.subject}</p>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
+
